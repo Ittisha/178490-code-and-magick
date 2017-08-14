@@ -27,32 +27,37 @@ window.renderStatistics = function (ctx, names, times) {
 
   ctx.fillStyle = cloud.textStyle;
   ctx.font = cloud.textFont;
-
   ctx.fillText('Ура вы победили!', cloud.textInitialX, cloud.textInitialY);
   ctx.fillText('Список результатов!', cloud.textInitialX, cloud.textInitialY + cloud.textIndentY);
 
   var i;
-  var max = -1;
+  var maxTime = -1;
   var minLength = Math.min(names.length, times.length);
 
   for (i = 0; i <= minLength; i++) {
     var time = times[i];
-    if (time > max) {
-      max = time;
+    if (time > maxTime) {
+      maxTime = time;
     }
   }
+
+  var getRandomNumber = function (min, max) {
+    return Math.random() * (max - min) + min;
+  };
+
   var histogram = {
     barWidth: 40,
     height: 150,
     step: function () {
-      return this.height / max;
+      return this.height / maxTime;
     },
     indent: 50,
-    initialX: 140,
+    textIndent: 20,
+    initialX: 150,
     initialY: 240,
-    youColor: 'rgba(255, 0, 0, 1)',
+    youColor: 'rgb(255, 0, 0)',
     getOtherPlayerColor: function () {
-      var randomOpacity = Math.random().toFixed(2).toString();
+      var randomOpacity = getRandomNumber(0.1, 1);
       return 'rgba(0, 0, 255, ' + randomOpacity + ')';
     },
     textStyle: '#000000',
@@ -65,11 +70,15 @@ window.renderStatistics = function (ctx, names, times) {
     } else {
       ctx.fillStyle = histogram.getOtherPlayerColor();
     }
-    ctx.fillRect(histogram.initialX + histogram.barWidth * i + histogram.indent * i, histogram.initialY, histogram.barWidth, -times[i] * histogram.step());
+    var timeInteger = Math.round(times[i]);
+    var barInitialX = histogram.initialX + histogram.barWidth * i + histogram.indent * i;
+    var barHeight = times[i] * histogram.step();
+
+    ctx.fillRect(barInitialX, histogram.initialY, histogram.barWidth, -barHeight);
 
     ctx.fillStyle = histogram.textStyle;
     ctx.font = histogram.textFont;
-    ctx.fillText(names[i], histogram.initialX + histogram.barWidth * i + histogram.indent * i, histogram.initialY + 20);
-    ctx.fillText(Math.round(times[i]).toString(), histogram.initialX + histogram.barWidth * i + histogram.indent * i, histogram.initialY - times[i] * histogram.step() - 10);
+    ctx.fillText(names[i], barInitialX, histogram.initialY + histogram.textIndent);
+    ctx.fillText(timeInteger.toString(), barInitialX, histogram.initialY - barHeight - histogram.textIndent / 2);
   }
 };
