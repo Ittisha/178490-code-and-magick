@@ -23,7 +23,7 @@ var getOtherPlayerColor = function () {
  */
 var renderCloud = function (ctx, cloudParams) {
   ctx.beginPath();
-  ctx.moveTo(cloudParams.xPoint || 100, cloudParams.yPoint || 10);
+  ctx.moveTo(cloudParams.xPoint, cloudParams.yPoint);
 
   ctx.bezierCurveTo(164, -3, 243, 3, 274, 14);
   ctx.bezierCurveTo(317, -2, 392, 2, 412, 19);
@@ -41,11 +41,11 @@ var renderCloud = function (ctx, cloudParams) {
   ctx.closePath();
   ctx.stroke();
 
-  ctx.shadowColor = cloudParams.shadowStyle || 'rgba(0, 0, 0, 0.7)';
-  ctx.shadowOffsetX = cloudParams.shadowIndentX || 10;
-  ctx.shadowOffsetY = cloudParams.shadowIndentY || 10;
+  ctx.shadowColor = cloudParams.shadowStyle;
+  ctx.shadowOffsetX = cloudParams.shadowIndentX;
+  ctx.shadowOffsetY = cloudParams.shadowIndentY;
 
-  ctx.fillStyle = cloudParams.style || 'white';
+  ctx.fillStyle = cloudParams.style;
   ctx.fill();
 
   ctx.shadowOffsetX = 0;
@@ -63,31 +63,29 @@ var renderCloud = function (ctx, cloudParams) {
 var renderBar = function (ctx, bar, names, times) {
   if (times.length !== names.length) {
     return false;
-  } else {
-    var maxTime = Math.max.apply(null, times);
-    var step = (bar.height || 150) / maxTime;
-
-    names.forEach(function (element, index) {
-      if (element === 'Вы') {
-        ctx.fillStyle = bar.youColor || 'rgb(255, 0, 0)';
-      } else {
-        ctx.fillStyle = getOtherPlayerColor();
-      }
-
-      var timeInteger = Math.round(times[index]);
-      var barInitialX = (bar.initialX || 150) + (bar.barWidth || 40) * index + (bar.indent || 50) * index;
-      var barHeight = times[index] * step;
-
-      ctx.fillRect(barInitialX, bar.initialY || 240, bar.barWidth || 40, -barHeight);
-
-      ctx.fillStyle = bar.textStyle || '#000000';
-      ctx.font = bar.textFont || '16px PT Mono';
-      ctx.fillText(element, barInitialX, (bar.initialY || 240) + (bar.textIndent || 20));
-      ctx.fillText(timeInteger.toString(), barInitialX, (bar.initialY || 240) - barHeight - (bar.textIndent || 20) / 2);
-    }
-    );
-    return true;
   }
+  var maxTime = Math.max.apply(null, times);
+  var step = (bar.height) / maxTime;
+
+  names.forEach(function (element, index) {
+    if (element === 'Вы') {
+      ctx.fillStyle = bar.youColor;
+    } else {
+      ctx.fillStyle = getOtherPlayerColor();
+    }
+
+    var timeInteger = Math.round(times[index]);
+    var barInitialX = (bar.initialX) + (bar.barWidth) * index + (bar.indent) * index;
+    var barHeight = times[index] * step;
+
+    ctx.fillRect(barInitialX, bar.initialY, bar.barWidth, -barHeight);
+
+    ctx.fillStyle = bar.textStyle;
+    ctx.font = bar.textFont;
+    ctx.fillText(element, barInitialX, (bar.initialY) + (bar.textIndent));
+    ctx.fillText(timeInteger.toString(), barInitialX, (bar.initialY) - barHeight - (bar.textIndent) / 2);
+  });
+  return true;
 };
 /**
  * Render cloud with players' statistics
