@@ -36,6 +36,12 @@ var EYES_COLORS = [
   'green'
 ];
 
+// Arrays copies for unique wizards creation
+var WIZARDS_NAMES = NAMES.slice(0);
+var WIZARDS_SURNAMES = SURNAMES.slice(0);
+var WIZARDS_COAT_COLORS = COAT_COLORS.slice(0);
+var WIZARDS_EYES_COLORS = EYES_COLORS.slice(0);
+
 var userDialog = document.querySelector('.setup');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template');
 var similarWizardContent = similarWizardTemplate ? similarWizardTemplate.content : similarWizardTemplate;
@@ -74,40 +80,51 @@ var getUniqueArrayItem = function (array) {
   return array.splice(getRandomInteger(0, array.length - 1), 1)[0];
 };
 /**
- * Creates wizards
+ * Create unique wizard
+ * @return {Object}
+ */
+var createUniqueWizard = function () {
+  // Random name and surname change
+  var wizardsNames = getRandomArrayItem([WIZARDS_NAMES, WIZARDS_SURNAMES]);
+  var wizardsSurnames = wizardsNames === WIZARDS_NAMES ? WIZARDS_SURNAMES : WIZARDS_NAMES;
+
+  return {
+    name: getUniqueArrayItem(wizardsNames) + ' ' + getUniqueArrayItem(wizardsSurnames),
+    coatColor: getUniqueArrayItem(WIZARDS_COAT_COLORS),
+    eyesColor: getUniqueArrayItem(WIZARDS_EYES_COLORS)
+  };
+};
+/**
+ * Create random wizard
+ * @return {Object}
+ */
+var createRandomWizard = function () {
+  return {
+    name: NAMES[getRandomInteger(0, NAMES.length - 1)] + ' ' + SURNAMES[getRandomInteger(0, SURNAMES.length - 1)],
+    coatColor: COAT_COLORS[getRandomInteger(0, COAT_COLORS.length - 1)],
+    eyesColor: EYES_COLORS[getRandomInteger(0, EYES_COLORS.length - 1)]
+  };
+};
+/**
+ * Choose and return unique or random wizard
+ * @return {Object}
+ */
+var chooseCreationMethod = function () {
+  if (WIZARDS_NUMBER > Math.min(NAMES.length, SURNAMES.length, COAT_COLORS.length, EYES_COLORS.length)) {
+    return createRandomWizard();
+  }
+  return createUniqueWizard();
+};
+/**
+ * Create an array with wizards objects
  * @return {Array}
  */
-var createWizards = function () {
-  var i;
-  var wizardsList = [];
-
-  if (WIZARDS_NUMBER > Math.min(NAMES.length, SURNAMES.length, COAT_COLORS.length, EYES_COLORS.length)) {
-    for (i = 0; i < WIZARDS_NUMBER; i++) {
-      wizardsList[i] = {
-        name: NAMES[getRandomInteger(0, NAMES.length - 1)] + ' ' + SURNAMES[getRandomInteger(0, SURNAMES.length - 1)],
-        coatColor: COAT_COLORS[getRandomInteger(0, COAT_COLORS.length - 1)],
-        eyesColor: EYES_COLORS[getRandomInteger(0, EYES_COLORS.length - 1)]
-      };
-    }
-  } else {
-    var WIZARDS_NAMES = NAMES.slice(0);
-    var WIZARDS_SURNAMES = SURNAMES.slice(0);
-    var WIZARDS_COAT_COLORS = COAT_COLORS.slice(0);
-    var WIZARDS_EYES_COLORS = EYES_COLORS.slice(0);
-
-    // Random name and surname change
-    var wizardsNames = getRandomArrayItem([WIZARDS_NAMES, WIZARDS_SURNAMES]);
-    var wizardsSurnames = wizardsNames === WIZARDS_NAMES ? WIZARDS_SURNAMES : WIZARDS_NAMES;
-
-    for (i = 0; i < WIZARDS_NUMBER; i++) {
-      wizardsList[i] = {
-        name: getUniqueArrayItem(wizardsNames) + ' ' + getUniqueArrayItem(wizardsSurnames),
-        coatColor: getUniqueArrayItem(WIZARDS_COAT_COLORS),
-        eyesColor: getUniqueArrayItem(WIZARDS_EYES_COLORS)
-      };
-    }
+var createAvailableWizards = function () {
+  var wizardsGroup = [];
+  for (var i = 0; i < WIZARDS_NUMBER; i++) {
+    wizardsGroup.push(chooseCreationMethod());
   }
-  return wizardsList;
+  return wizardsGroup;
 };
 /**
  * Return a wizard
@@ -135,7 +152,7 @@ var renderAllWizards = function (wizards, targetNode) {
 };
 
 makeVisible(userDialog);
-var wizardsList = createWizards();
+var wizardsList = createAvailableWizards();
 renderAllWizards(wizardsList, similarList);
 makeVisible(similarSetup);
 
