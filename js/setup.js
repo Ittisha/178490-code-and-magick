@@ -156,4 +156,68 @@ var wizardsList = createAvailableWizards();
 renderAllWizards(wizardsList, similarList);
 makeVisible(similarSetup);
 
+// Module4-task1
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
+var setup = document.querySelector('.setup');
+var setupOpen = document.querySelector('.setup-open');
+var setupOpenIcon = document.querySelector('.setup-open-icon');
+
+var setupClose = setup.querySelector('.setup-close');
+var setupForm = setup.querySelector('.setup-wizard-form');
+var setupUserName = setupForm.querySelector('.setup-user-name');
+var setupButton = setupForm.querySelector('.setup-submit');
+
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE && setupUserName !== document.activeElement) {
+    closePopup();
+  }
+};
+
+var openPopup = function () {
+  makeVisible(setup);
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+var onSetupOpenClick = function () {
+  openPopup();
+};
+
+var onSetupOpenEnterPress = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    openPopup();
+  }
+};
+var closePopup = function () {
+  setup.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+var onSetupCloseClick = function () {
+  closePopup();
+};
+var onSetupCloseEnterPress = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closePopup();
+  }
+};
+var onSetupButtonClick = function (evt) {
+  evt.preventDefault();
+  closePopup();
+};
+var onSetupButtonEnterPress = function (evt) {
+  evt.preventDefault();
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closePopup();
+  }
+};
+
+setupOpen.addEventListener('click', onSetupOpenClick);
+setupOpenIcon.addEventListener('keydown', onSetupOpenEnterPress);
+
+setupClose.addEventListener('click', onSetupCloseClick);
+setupClose.addEventListener('keydown', onSetupCloseEnterPress);
+
+setupButton.addEventListener('click', onSetupButtonClick);
+setupButton.addEventListener('keydown', onSetupButtonEnterPress);
 
