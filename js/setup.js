@@ -221,7 +221,11 @@ setupClose.addEventListener('keydown', onSetupCloseEnterPress);
 /* submitButton.addEventListener('click', onSetupButtonClick);
 submitButton.addEventListener('keydown', onSetupButtonEnterPress);*/
 
-var returnValidationMessage = function (inputNode) {
+/**
+ * Rewrite validation messages in russian
+ * @param {Node} inputNode
+ */
+var rewriteValidationMessages = function (inputNode) {
   var minLength = inputNode.getAttribute('minlength');
   var maxLength = inputNode.getAttribute('maxlength');
 
@@ -237,7 +241,6 @@ var returnValidationMessage = function (inputNode) {
  * Validation for min length for Edge
  * @param {Object} evt
  */
-
 var onUserNameInput = function (evt) {
   var minLength = evt.target.getAttribute('minlength');
   var target = evt.target;
@@ -247,12 +250,16 @@ var onUserNameInput = function (evt) {
     target.setCustomValidity('');
   }
 };
+/**
+ * Call new validation messages if input invalid
+ */
 var onUserNameInputInvalid = function () {
   if (!userNameInput.validity.valid) {
-    returnValidationMessage(userNameInput);
+    rewriteValidationMessages(userNameInput);
   } else {
     userNameInput.setCustomValidity('');
   }
 };
+
 userNameInput.addEventListener('input', onUserNameInput);
 userNameInput.addEventListener('invalid', onUserNameInputInvalid);
