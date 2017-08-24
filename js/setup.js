@@ -44,7 +44,7 @@ var WIZARDS_EYES_COLORS = EYES_COLORS.slice(0);
 
 var userDialog = document.querySelector('.setup');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template');
-var similarWizardContent = similarWizardTemplate ? similarWizardTemplate.content : similarWizardTemplate;
+var similarWizardContent = similarWizardTemplate.content ? similarWizardTemplate.content : similarWizardTemplate;
 var similarList = userDialog.querySelector('.setup-similar-list');
 var similarSetup = userDialog.querySelector('.setup-similar');
 
