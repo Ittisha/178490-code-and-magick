@@ -166,11 +166,11 @@ var setupOpenIcon = document.querySelector('.setup-open-icon');
 
 var setupClose = setup.querySelector('.setup-close');
 var setupForm = setup.querySelector('.setup-wizard-form');
-var setupUserName = setupForm.querySelector('.setup-user-name');
-var setupButton = setupForm.querySelector('.setup-submit');
+var userNameInput = setupForm.querySelector('.setup-user-name');
+var submitButton = setupForm.querySelector('.setup-submit');
 
 var onPopupEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE && setupUserName !== document.activeElement) {
+  if (evt.keyCode === ESC_KEYCODE && userNameInput !== document.activeElement) {
     closePopup();
   }
 };
@@ -202,11 +202,11 @@ var onSetupCloseEnterPress = function (evt) {
   }
 };
 var onSetupButtonClick = function (evt) {
-  evt.preventDefault();
+  //evt.preventDefault();
   closePopup();
 };
 var onSetupButtonEnterPress = function (evt) {
-  evt.preventDefault();
+  //evt.preventDefault();
   if (evt.keyCode === ENTER_KEYCODE) {
     closePopup();
   }
@@ -218,6 +218,41 @@ setupOpenIcon.addEventListener('keydown', onSetupOpenEnterPress);
 setupClose.addEventListener('click', onSetupCloseClick);
 setupClose.addEventListener('keydown', onSetupCloseEnterPress);
 
-setupButton.addEventListener('click', onSetupButtonClick);
-setupButton.addEventListener('keydown', onSetupButtonEnterPress);
+/* submitButton.addEventListener('click', onSetupButtonClick);
+submitButton.addEventListener('keydown', onSetupButtonEnterPress);*/
 
+var returnValidationMessage = function (inputNode) {
+  var minLength = inputNode.getAttribute('minlength');
+  var maxLength = inputNode.getAttribute('maxlength');
+
+  if (inputNode.validity.tooShort) {
+    inputNode.setCustomValidity('Имя должно состоять минимум из ' + minLength + ' символов');
+  } else if (inputNode.validity.tooLong) {
+    inputNode.setCustomValidity('Имя не должно превышать ' + maxLength + 'символов');
+  } else if (inputNode.validity.valueMissing) {
+    inputNode.setCustomValidity('Обязательное поле');
+  }
+};
+/**
+ * Validation for min length for Edge
+ * @param {Object} evt
+ */
+
+var onUserNameInput = function (evt) {
+  var minLength = evt.target.getAttribute('minlength');
+  var target = evt.target;
+  if (target.value.length < minLength) {
+    target.setCustomValidity('Имя должно состоять минимум из ' + minLength + ' символов');
+  } else {
+    target.setCustomValidity('');
+  }
+};
+var onUserNameInputInvalid = function () {
+  if (!userNameInput.validity.valid) {
+    returnValidationMessage(userNameInput);
+  } else {
+    userNameInput.setCustomValidity('');
+  }
+};
+userNameInput.addEventListener('input', onUserNameInput);
+userNameInput.addEventListener('invalid', onUserNameInputInvalid);
