@@ -42,11 +42,11 @@ var WIZARDS_SURNAMES = SURNAMES.slice(0);
 var WIZARDS_COAT_COLORS = COAT_COLORS.slice(0);
 var WIZARDS_EYES_COLORS = EYES_COLORS.slice(0);
 
-var userDialog = document.querySelector('.setup');
+var setup = document.querySelector('.setup');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template');
 var similarWizardContent = similarWizardTemplate.content ? similarWizardTemplate.content : similarWizardTemplate;
-var similarList = userDialog.querySelector('.setup-similar-list');
-var similarSetup = userDialog.querySelector('.setup-similar');
+var similarList = setup.querySelector('.setup-similar-list');
+var similarSetup = setup.querySelector('.setup-similar');
 
 /**
  * Remove class .hidden
@@ -151,16 +151,28 @@ var renderAllWizards = function (wizards, targetNode) {
   targetNode.appendChild(fragment);
 };
 
-makeVisible(userDialog);
 var wizardsList = createAvailableWizards();
 renderAllWizards(wizardsList, similarList);
 makeVisible(similarSetup);
 
 // Module4-task1
+
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 
-var setup = document.querySelector('.setup');
+var FIREBALL_COLORS = [
+  '#ee4830',
+  '#30a8ee',
+  '#5ce6c0',
+  '#e848d5',
+  '#e6e848'
+];
+
+// for click count
+var coatColorClick = 0;
+var eyesColorClick = 0;
+var fireballColorClick = 0;
+
 var setupOpen = document.querySelector('.setup-open');
 var setupOpenIcon = document.querySelector('.setup-open-icon');
 
@@ -169,46 +181,103 @@ var setupForm = setup.querySelector('.setup-wizard-form');
 var userNameInput = setupForm.querySelector('.setup-user-name');
 var submitButton = setupForm.querySelector('.setup-submit');
 
+var userWizardAppearance = setup.querySelector('.setup-wizard-appearance');
+var userWizard = userWizardAppearance.querySelector('.setup-wizard');
+var userWizardCoat = userWizard.querySelector('.wizard-coat');
+var userWizardEyes = userWizard.querySelector('.wizard-eyes');
+var userWizardFireball = setup.querySelector('.setup-fireball-wrap');
+
+var wizardCoatInput = userWizardAppearance.querySelector('input[name=coat-color]');
+var wizardEyesInput = userWizardAppearance.querySelector('input[name=eyes-color]');
+var wizardFireballInput = userWizardFireball.querySelector('input[name=fireball-color]');
+
+/**
+ * Close popup on ESC press if name input isn't focused
+ * @param {Object} evt
+ */
 var onPopupEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE && userNameInput !== document.activeElement) {
     closePopup();
   }
 };
-
+/**
+ * Open popup
+ */
 var openPopup = function () {
   makeVisible(setup);
   document.addEventListener('keydown', onPopupEscPress);
 };
-
+/**
+ * Open popup on avatar click
+ */
 var onSetupOpenClick = function () {
   openPopup();
 };
-
+/**
+ * Open popup on Enter press on user avatar
+ * @param {Object} evt
+ */
 var onSetupOpenEnterPress = function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     openPopup();
   }
 };
+/**
+ * CLose popup
+ */
 var closePopup = function () {
   setup.classList.add('hidden');
   document.removeEventListener('keydown', onPopupEscPress);
 };
+/**
+ * Close popup on cross click
+ */
 var onSetupCloseClick = function () {
   closePopup();
 };
+/**
+ * Close popup on cross Enter press
+ * @param {Object} evt
+ */
 var onSetupCloseEnterPress = function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     closePopup();
   }
 };
-var onSetupButtonClick = function (evt) {
-  //evt.preventDefault();
-  closePopup();
-};
-var onSetupButtonEnterPress = function (evt) {
-  //evt.preventDefault();
-  if (evt.keyCode === ENTER_KEYCODE) {
+/**
+ * Check validation of name input, if valid - submit and close popup
+ * @param {Object} evt
+ */
+var checkValidationSubmit = function (evt) {
+  var stopSubmit;
+
+  userNameInput.reportValidity();
+
+  if (userNameInput.checkValidity() === false) {
+    stopSubmit = true;
+  } else {
+    setupForm.submit();
     closePopup();
+  }
+
+  if (stopSubmit) {
+    evt.preventDefault();
+  }
+};
+/**
+ * Close popup on submit button click
+ * @param {Object} evt
+ */
+var onSetupButtonClick = function (evt) {
+  checkValidationSubmit(evt);
+};
+/**
+ * Close popup on submit button Enter press
+ * @param {Object} evt
+ */
+var onSetupButtonEnterPress = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    checkValidationSubmit();
   }
 };
 
@@ -218,8 +287,8 @@ setupOpenIcon.addEventListener('keydown', onSetupOpenEnterPress);
 setupClose.addEventListener('click', onSetupCloseClick);
 setupClose.addEventListener('keydown', onSetupCloseEnterPress);
 
-/* submitButton.addEventListener('click', onSetupButtonClick);
-submitButton.addEventListener('keydown', onSetupButtonEnterPress);*/
+submitButton.addEventListener('click', onSetupButtonClick);
+submitButton.addEventListener('keydown', onSetupButtonEnterPress);
 
 /**
  * Rewrite validation messages in russian
@@ -263,3 +332,57 @@ var onUserNameInputInvalid = function () {
 
 userNameInput.addEventListener('input', onUserNameInput);
 userNameInput.addEventListener('invalid', onUserNameInputInvalid);
+
+/**
+ * Count function calls, not more than array length
+ * @param {number} count
+ * @param {Array} array
+ * @return {number}
+ */
+var countCalls = function (count, array) {
+  count++;
+  if (count > array.length - 1) {
+    count = 0;
+  }
+  return count;
+};
+/**
+ * Change wizard coat color by order on click
+ * @param {Object} evt
+ */
+var onUserWizardCoatClick = function (evt) {
+  var coatColor;
+
+  coatColorClick = countCalls(coatColorClick, COAT_COLORS);
+  coatColor = COAT_COLORS[coatColorClick];
+  evt.target.style.fill = coatColor;
+  wizardCoatInput.value = coatColor;
+};
+/**
+ * Change wizard eyes color by order on click
+ * @param {Object} evt
+ */
+var onUserWizardEyesClick = function (evt) {
+  var eyesColor;
+
+  eyesColorClick = countCalls(eyesColorClick, EYES_COLORS);
+  eyesColor = EYES_COLORS[eyesColorClick];
+  evt.target.style.fill = eyesColor;
+  wizardEyesInput.value = eyesColor;
+};
+/**
+ * Change wizard fireball color by order on click
+ * @param {Object} evt
+ */
+var onUserWizardFireballClick = function (evt) {
+  var fireballColor;
+
+  fireballColorClick = countCalls(fireballColorClick, FIREBALL_COLORS);
+  fireballColor = FIREBALL_COLORS[fireballColorClick];
+  evt.target.style.backgroundColor = fireballColor;
+  wizardFireballInput.value = fireballColor;
+};
+
+userWizardCoat.addEventListener('click', onUserWizardCoatClick);
+userWizardEyes.addEventListener('click', onUserWizardEyesClick);
+userWizardFireball.addEventListener('click', onUserWizardFireballClick);
