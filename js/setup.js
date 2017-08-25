@@ -249,20 +249,15 @@ var onSetupCloseEnterPress = function (evt) {
  * @param {Object} evt
  */
 var checkValidationSubmit = function (evt) {
-  var stopSubmit;
-
   userNameInput.reportValidity();
 
   if (userNameInput.checkValidity() === false) {
-    stopSubmit = true;
+    evt.preventDefault();
   } else {
     setupForm.submit();
     closePopup();
   }
 
-  if (stopSubmit) {
-    evt.preventDefault();
-  }
 };
 /**
  * Close popup on submit button click
