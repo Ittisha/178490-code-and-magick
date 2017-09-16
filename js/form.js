@@ -17,7 +17,7 @@ window.form = (function () {
       evt.preventDefault();
     } else {
       setupForm.submit();
-      window.setup.closePopup();
+      window.dialog.closePopup();
     }
 
   };
