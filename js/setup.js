@@ -78,7 +78,7 @@
 
   shopElement.addEventListener('dragstart', function (evt) {
     if (evt.target.tagName.toLowerCase() === 'img') {
-      draggedItem = evt.target;
+      draggedItem = evt.target.cloneNode(true);
       evt.dataTransfer.setData('text/plain', evt.target.alt);
     }
   });
@@ -92,14 +92,18 @@
   artifactsElement.addEventListener('drop', function (evt) {
     evt.target.style.backgroundColor = '';
     evt.target.style.outline = 'none';
-    evt.target.appendChild(draggedItem);
+    if (!evt.target.children.length && evt.target.tagName.toLowerCase() !== 'img') {
+      evt.target.appendChild(draggedItem);
+    }
     evt.preventDefault();
   });
 
 
   artifactsElement.addEventListener('dragenter', function (evt) {
-    evt.target.style.backgroundColor = 'yellow';
-    evt.target.style.outline = '2px solid red';
+    if (!evt.target.children.length && evt.target.tagName.toLowerCase() !== 'img') {
+      evt.target.style.backgroundColor = 'yellow';
+      evt.target.style.outline = '2px solid red';
+    }
     evt.preventDefault();
   });
 
