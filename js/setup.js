@@ -15,59 +15,66 @@
   var shopElement = document.querySelector('.setup-artifacts-shop');
   var artifactsElement = document.querySelector('.setup-artifacts');
 
-
-  // for click count
-  var coatColorClick = 0;
-  var eyesColorClick = 0;
-  var fireballColorClick = 0;
   /**
-   * Count function calls, not more than array length
-   * @param {number} count
-   * @param {Array} array
-   * @return {number}
+   * Fill svg
+   * @param {Node} element
+   * @param {string} color
    */
-  var countCalls = function (count, array) {
-    count++;
-    if (count > array.length - 1) {
-      count = 0;
-    }
-    return count;
+  var fillElement = function (element, color) {
+    element.style.fill = color;
   };
+
+  /**
+   * Change background
+   * @param {Node} element
+   * @param {string} color
+   */
+  var changeElementBackground = function (element, color) {
+    element.style.backgroundColor = color;
+  };
+
+  /**
+   * Change input value
+   * @param {Node} element
+   * @param {string} color
+   */
+  var changeInputValue = function (element, color) {
+    element.value = color;
+  };
+
   /**
    * Change wizard coat color by order on click
    * @param {Object} evt
    */
   var onUserWizardCoatClick = function (evt) {
-    var coatColor;
-
-    coatColorClick = countCalls(coatColorClick, window.data.wizardsColors.coat);
-    coatColor = window.data.wizardsColors.coat[coatColorClick];
-    evt.target.style.fill = coatColor;
-    wizardCoatInput.value = coatColor;
+    window.colorizeElement.colorize(evt.target, window.data.wizardsColors.coat,
+        fillElement);
+    window.colorizeElement.fillColorInput(wizardCoatInput, window.data.wizardsColors.coat,
+        changeInputValue);
   };
+
   /**
    * Change wizard eyes color by order on click
    * @param {Object} evt
    */
   var onUserWizardEyesClick = function (evt) {
-    var eyesColor;
-
-    eyesColorClick = countCalls(eyesColorClick, window.data.wizardsColors.eyes);
-    eyesColor = window.data.wizardsColors.eyes[eyesColorClick];
-    evt.target.style.fill = eyesColor;
-    wizardEyesInput.value = eyesColor;
+    window.colorizeElement.colorize(evt.target, window.data.wizardsColors.eyes,
+        fillElement);
+    window.colorizeElement.fillColorInput(wizardEyesInput, window.data.wizardsColors.eyes,
+        changeInputValue);
   };
+
   /**
    * Change wizard fireball color by order on click
    * @param {Object} evt
    */
   var onUserWizardFireballClick = function (evt) {
-    var fireballColor;
 
-    fireballColorClick = countCalls(fireballColorClick, window.data.wizardsColors.fireball);
-    fireballColor = window.data.wizardsColors.fireball[fireballColorClick];
-    evt.target.style.backgroundColor = fireballColor;
-    wizardFireballInput.value = fireballColor;
+    window.colorizeElement.colorize(evt.target, window.data.wizardsColors.fireball,
+        changeElementBackground);
+    window.colorizeElement.fillColorInput(wizardFireballInput, window.data.wizardsColors.fireball,
+        changeInputValue);
+
   };
 
   userWizardCoat.addEventListener('click', onUserWizardCoatClick);
@@ -88,7 +95,6 @@
     return false;
   });
 
-
   artifactsElement.addEventListener('drop', function (evt) {
     evt.target.style.backgroundColor = '';
     evt.target.style.outline = 'none';
@@ -97,7 +103,6 @@
     }
     evt.preventDefault();
   });
-
 
   artifactsElement.addEventListener('dragenter', function (evt) {
     if (!evt.target.children.length && evt.target.tagName.toLowerCase() !== 'img') {
