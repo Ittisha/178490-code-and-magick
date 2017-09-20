@@ -6,8 +6,17 @@ window.dialog = (function () {
   var similarSetup = setup.querySelector('.setup-similar');
   var dialogHandle = setup.querySelector('.upload');
 
-  var wizardsList = window.data.createAvailableWizards();
-  window.wizard.renderAllWizards(wizardsList, similarList);
+  var showSimilarWizards = function (data) {
+    var fourUniqueWizards = [];
+    var wizardsCopy = data.slice();
+
+    for (var i = 0; i < 4; i++) {
+      fourUniqueWizards.push(window.util.getUniqueArrayItem(wizardsCopy));
+    }
+
+    window.wizard.renderAllWizards(fourUniqueWizards, similarList);
+  };
+  window.backend.load(showSimilarWizards, window.backend.showError);
   window.util.makeVisible(similarSetup);
 
   var setupOpen = document.querySelector('.setup-open');

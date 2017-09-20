@@ -12,8 +12,8 @@ window.wizard = (function () {
   var renderWizard = function (wizard) {
     var wizardItem = similarWizardContent.querySelector('.setup-similar-item').cloneNode(true);
     wizardItem.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardItem.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-    wizardItem.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+    wizardItem.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
+    wizardItem.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
     return wizardItem;
   };
   /**
