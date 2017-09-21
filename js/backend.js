@@ -96,8 +96,6 @@ window.backend = (function () {
 
     var closeButton = document.createElement('span');
     closeButton.textContent = '×';
-    closeButton.style.fontSize = '70px';
-
     containerClose.appendChild(closeButton);
     errorContainer.appendChild(containerClose);
     document.body.appendChild(errorContainer);
