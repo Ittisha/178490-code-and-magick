@@ -1,7 +1,7 @@
 'use strict';
 
 window.backend = (function () {
-  var SERVER_URL = 'https://1510.dump.academy/code-and-magick';
+  var SERVER_URL = 'https://js.dump.academy/code-and-magick';
   var DATA_URL_ENDING = '/data';
   var REQUEST_TIMEOUT = 10000;
 
